@@ -17,18 +17,16 @@ LEDAnimation::EndingType LEDAnimation::GetEndingType(string ending)
 }
 
 
-//Allocating memory for animation based on desired LEDCount and AnimationLength
-LEDAnimation::LEDAnimation(int LEDCount, int animationLen, int stepper, string ending, vector<string> frames, sk *driver) 
+//Allocating memory for animation
+LEDAnimation::LEDAnimation(int stepper, string ending, vector<string> frames, sk *driver) 
 {
-    this->animationLen = animationLen;
     this->stepper = stepper;
     frameEnding = GetEndingType(ending);
     curFrame = 0;
     nextFrame = 1; //should do some checking before assuming 1 exists
     this->driver = driver;
     //Serial.println("Got through basic assignments");
-
-    for(int i = 0; i < animationLen; i++) 
+    for(int i = 0; i < frames.size(); i++) 
     {
         //Serial.println("For loop within LEDAnimation constructor");
         animation.push_back(LEDFrame(frames.at(i), driver));
@@ -78,7 +76,7 @@ bool LEDAnimation::PickNextFrame()
 bool LEDAnimation::restartEnding() 
 {
     curFrame = nextFrame;
-    if((nextFrame + stepper) < animationLen) 
+    if((nextFrame + stepper) < animation.size()) 
     {
         nextFrame = nextFrame + stepper;
     }
@@ -92,7 +90,7 @@ bool LEDAnimation::restartEnding()
 bool LEDAnimation::reverseEnding() 
 {
     curFrame = nextFrame;
-    if((nextFrame + stepper) >= 0 && (nextFrame + stepper) < animationLen) 
+    if((nextFrame + stepper) >= 0 && (nextFrame + stepper) < animation.size()) 
     {
         nextFrame = nextFrame + stepper;
     }
@@ -112,5 +110,8 @@ bool LEDAnimation::randomEnding()
 
 void LEDAnimation::DebugFrame(int frameNum)
 {
-    animation.at(frameNum).DebugFrame();
+    if(animation.size() > frameNum)
+        animation.at(frameNum).DebugFrame();
+    else
+        Serial.printf("Animation does not have frame at index %d\n", frameNum);
 }

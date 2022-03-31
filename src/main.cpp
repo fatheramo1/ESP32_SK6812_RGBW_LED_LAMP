@@ -36,7 +36,7 @@ void setup()
     return;
   }
 
-  File file = SPIFFS.open("/LEDTestAnimation1.csv");
+  File file = SPIFFS.open("/PurpleDotAnimation.csv");
   if(!file){
     Serial.println("Failed to open file!");
     return;
@@ -49,7 +49,7 @@ void setup()
   file.close();
   try
   {
-    LEDDriver = new LEDAnimationDriver("LEDTestAnimation1.csv", LED_PIN);
+    LEDDriver = new LEDAnimationDriver("/PurpleDotAnimation.csv", LED_PIN);
     int64_t time = GetTimeInMilSec();
     Serial.printf("Setting start time as %d\n", time);
     LEDDriver->SetStartTime(time);

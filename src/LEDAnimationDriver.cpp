@@ -37,7 +37,7 @@ LEDAnimation LEDAnimationDriver::readAnimation(string filePath)
         Serial.println("SPIFFS couldn't begin :(");
     }
 
-    File file = SPIFFS.open("/LEDTestAnimation1.csv");
+    File file = SPIFFS.open("/PurpleDotAnimation.csv");
     if(!file){
         Serial.println("Failed to open file!");
     }
@@ -67,18 +67,17 @@ LEDAnimation LEDAnimationDriver::readAnimation(string filePath)
     string frameEnding = animationInfo.at(3);
     vector<string> frames;
     // Serial.println("File headers read: ");
-    // Serial.println(animationLen);
     // Serial.println(LEDCount);
     // Serial.println(stepper);
     // Serial.println(frameEnding.c_str());
     driver->begin(pin, LEDCount);
-    for(int i = 0; i < animationLen; i++) 
+    while(file.available())
     {
-        //Serial.println("how many times will this print?");
+    //    Serial.println("how many times will this print?");
         frames.push_back(file.readStringUntil('\n').c_str());
     }
     //Serial.println("Did we make it through the for loop?");
-    LEDAnimation ret = LEDAnimation(LEDCount, animationLen, stepper, frameEnding, frames, driver);
+    LEDAnimation ret = LEDAnimation(stepper, frameEnding, frames, driver);
     Serial.println("WE MADE IT THROUGH ALL OF THE CONSTRUCTORS");
     return ret;
 }

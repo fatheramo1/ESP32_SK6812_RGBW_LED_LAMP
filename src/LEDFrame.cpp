@@ -1,7 +1,9 @@
 #include "LEDFrame.h"   
 LEDFrame::LEDFrame(string frameInfo, sk* driver) 
 {
-    //Serial.println("LEDFrame cconstructor Starting");
+    // Serial.println("LEDFrame cconstructor Starting");
+    // Serial.printf("LEDFrame consturctor given string\n");
+    // Serial.println(frameInfo.c_str());
     this->driver = driver;
     stringstream s_stream(frameInfo);
     vector<string> temp;
@@ -107,6 +109,7 @@ uint32_t LEDFrame::InterpolColors(float percentage, uint32_t curColor, uint32_t 
 
 void LEDFrame::DebugFrame()
 {
+    Serial.println("hello?");
     Serial.printf("TTL: %d\n", TTL);
     for(int i = 0; i < LEDValues.size(); i++)
     {
