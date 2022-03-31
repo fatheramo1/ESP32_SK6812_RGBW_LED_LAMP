@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <LEDAnimationDriver.cpp>
+#include "LEDAnimationDriver.h"
 #include <sk.h>
 #include <sys/time.h>
 #include "SPIFFS.h"
@@ -67,18 +67,16 @@ void loop()
   try
   {
     int64_t time = GetTimeInMilSec();
-    Serial.printf("NextStep time is %d\n", time);
-    LEDDriver->NextAnimationStep(time);
-    //Serial.println("We got through NextAnimationStep");
+    //Serial.printf("NextStep time is %d\n", time);
     LEDDriver->SetBrightness((analogRead(RES_PIN) * 100) / MAX_RES);
-    //Serial.println("We got through SetBrightness");
+    LEDDriver->NextAnimationStep(time);
   }
   catch (exception e)
   {
     Serial.println(e.what());
     delay(100000);
   }
-  delay(10);
+  //delay(10);
 }
 
 // int64_t GetTimeInMilSec() {

@@ -1,7 +1,7 @@
 #include "LEDFrame.h"   
 LEDFrame::LEDFrame(string frameInfo, sk* driver) 
 {
-    Serial.println("LEDFrame cconstructor Starting");
+    //Serial.println("LEDFrame cconstructor Starting");
     this->driver = driver;
     stringstream s_stream(frameInfo);
     vector<string> temp;
@@ -18,7 +18,7 @@ LEDFrame::LEDFrame(string frameInfo, sk* driver)
 //        Serial.print(temp.at(i).c_str()); Serial.print(", ");
         LEDValues.push_back(StringToColor(temp.at(i).c_str()));
     }
-    Serial.println("LEDFrame constructor finsihed");
+    //Serial.println("LEDFrame constructor finsihed");
 }
 
 /**
