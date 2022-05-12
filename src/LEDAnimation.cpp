@@ -4,16 +4,17 @@
 LEDAnimation::EndingType LEDAnimation::GetEndingType(string ending)
 {
     const char* temp = ending.c_str();
-    EndingType ret = RESTART;
+    EndingType ret = RANDOM;
 
     
-
+    /*
     if(temp = "restart")
         ret = RESTART;
     else if(temp = "reverse")
         ret = REVERSE;
     else if(temp = "random")
         ret = RANDOM;
+    */
     return ret;
 }
 
@@ -112,7 +113,9 @@ bool LEDAnimation::randomEnding()
 void LEDAnimation::DebugFrame(int frameNum)
 {
     if(animation.size() > frameNum)
+    {
         animation.at(frameNum).DebugFrame();
+    }
     else
         Serial.printf("Animation does not have frame at index %d\n", frameNum);
 }

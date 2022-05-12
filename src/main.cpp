@@ -10,7 +10,8 @@
 
 #define LED_COUNT 60
 #define LED_PIN 26
-#define RES_PIN 36
+#define RES_PIN_1 36
+#define RES_PIN_2 39
 #define MAX_RES 4095
 
 int Brightness = 0;
@@ -23,6 +24,12 @@ int64_t GetTimeInMilSec() {
     int64_t ret = (int64_t)tv_now.tv_sec * 1000000L + (int64_t)tv_now.tv_usec;//microsecond percesion
     ret = ret / 1000;//millisecond percession
     return ret;
+}
+
+float ADCToFloat(int adcVal)
+{
+  float ret = float(adcVal) * 10 / MAX_RES + 0.5;
+  return ret;
 }
 
 void setup() 
@@ -68,7 +75,8 @@ void loop()
   {
     int64_t time = GetTimeInMilSec();
     //Serial.printf("NextStep time is %d\n", time);
-    LEDDriver->SetBrightness((analogRead(RES_PIN) * 100) / MAX_RES);
+    LEDDriver->SetBrightness((analogRead(RES_PIN_1) * 100) / MAX_RES);
+    LEDDriver->SetSpeed((ADCToFloat(analogRead(RES_PIN_2))));
     LEDDriver->NextAnimationStep(time);
   }
   catch (exception e)
@@ -78,11 +86,3 @@ void loop()
   }
   //delay(10);
 }
-
-// int64_t GetTimeInMilSec() {
-//     struct timeval tv_now;
-//     gettimeofday(&tv_now, NULL);
-//     int64_t ret = (int64_t)tv_now.tv_sec * 1000000L + (int64_t)tv_now.tv_usec;//microsecond percesion
-//     ret = ret / 1000;//millisecond percession
-//     return ret;
-// }
