@@ -3,16 +3,17 @@
 //TODO: figure out how to convert the string from the file to an enum
 LEDAnimation::EndingType LEDAnimation::GetEndingType(string ending)
 {
+    const char* temp = ending.c_str();
     EndingType ret = RESTART;
-    // switch(ending)
-    // {
-    //     case "reverse": ret = REVERSE;
-    //     break;
-    //     case "restart": ret = RESTART;
-    //     break;
-    //     case "random" : ret = RANDOM;
-    //     break;
-    // }
+
+    
+
+    if(temp = "restart")
+        ret = RESTART;
+    else if(temp = "reverse")
+        ret = REVERSE;
+    else if(temp = "random")
+        ret = RANDOM;
     return ret;
 }
 
