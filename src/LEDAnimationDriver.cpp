@@ -37,6 +37,7 @@ LEDAnimation LEDAnimationDriver::readAnimation(string filePath)
         Serial.println("SPIFFS couldn't begin :(");
     }
 
+    //TODO: Figure out why SPIFFS could not open a file from a string object.
     File file = SPIFFS.open("/PurpleDotAnimation.csv");
     if(!file){
         Serial.println("Failed to open file!");

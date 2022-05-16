@@ -18,6 +18,11 @@ int Brightness = 0;
 LEDAnimationDriver *LEDDriver;
 char tmp[256];
 
+/**
+ * @brief Get the Time In Milli-Second precision 
+ * 
+ * @return int64_t current time
+ */
 int64_t GetTimeInMilSec() {
     struct timeval tv_now;
     gettimeofday(&tv_now, NULL);
@@ -26,6 +31,13 @@ int64_t GetTimeInMilSec() {
     return ret;
 }
 
+/**
+ * @brief Takes in a ADCs analog voltage and converts it to a value between 0.5 and 10.
+ * Used to convert the ADCs value to a smaller float that can be used as a speed scaller.
+ * 
+ * @param adcVal 
+ * @return float 
+ */
 float ADCToFloat(int adcVal)
 {
   float ret = float(adcVal) * 10 / MAX_RES + 0.5;
@@ -34,7 +46,8 @@ float ADCToFloat(int adcVal)
 
 void setup() 
 {
-  // put your setup code here, to run once:
+  //Testing Block for file system
+  /*
   Serial.begin(9600);
   Serial.println("Hello World");
   if(!SPIFFS.begin(true))
@@ -54,6 +67,10 @@ void setup()
     Serial.write(file.read());
   }
   file.close();
+  */
+
+
+  //Anitialize the LEDAnimation Driver with a desired LEDAnimation csv file.
   try
   {
     LEDDriver = new LEDAnimationDriver("/PurpleDotAnimation.csv", LED_PIN);
@@ -69,6 +86,13 @@ void setup()
 
 }
 
+/**
+ * @brief The Loop simply gets the current time.
+ * Reads the Analog pins for setting the drivers brightness and speed.
+ * Then called the driver to compute and show the next step
+ * in the animation at the current time.
+ * 
+ */
 void loop() 
 {
   try
