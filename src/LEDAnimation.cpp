@@ -3,18 +3,23 @@
 //TODO: figure out how to convert the string from the file to an enum
 LEDAnimation::EndingType LEDAnimation::GetEndingType(string ending)
 {
-    const char* temp = ending.c_str();
-    EndingType ret = RANDOM;
-
-    
-    /*
-    if(temp = "restart")
+    Serial.printf("Ending name found: |%s|\n", ending.c_str());
+    EndingType ret = RESTART;
+    if(ending == "restart")
+    {
         ret = RESTART;
-    else if(temp = "reverse")
+        Serial.println("restart found");
+    }
+    else if(ending == "reverse")
+    {
         ret = REVERSE;
-    else if(temp = "random")
+        Serial.println("reverse found");
+    }
+    else if(ending == "random")
+    {
         ret = RANDOM;
-    */
+        Serial.println("random found");
+    }
     return ret;
 }
 

@@ -47,9 +47,10 @@ float ADCToFloat(int adcVal)
 void setup() 
 {
   //Testing Block for file system
-  /*
+  
   Serial.begin(9600);
   Serial.println("Hello World");
+  /*
   if(!SPIFFS.begin(true))
   {
     Serial.println("SPIFFS couldn't begin :(");
