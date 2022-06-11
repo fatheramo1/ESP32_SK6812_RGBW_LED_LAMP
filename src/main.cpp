@@ -78,6 +78,7 @@ void setup()
     int64_t time = GetTimeInMilSec();
     Serial.printf("Setting start time as %d\n", time);
     LEDDriver->SetStartTime(time);
+    LEDDriver->AddAnimation("/LEDTestAnimation1.csv");
     LEDDriver->DebugFileOutput();
   }
   catch (exception e)

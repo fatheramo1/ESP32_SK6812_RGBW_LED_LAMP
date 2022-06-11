@@ -31,6 +31,7 @@ public:
     void SetBrightness(int brightness) { driver->setbrightness(brightness); }
     void NextAnimation(int64_t curTime);
     bool NextAnimationStep(int64_t curTime);
+    void AddAnimation(string filePath);
     void DebugFileOutput();
 
 private: 

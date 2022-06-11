@@ -6,6 +6,7 @@ LEDAnimationDriver::LEDAnimationDriver(string filePath, int pin)
     driver = new sk();
     this->pin = pin;
     animations.push_back(readAnimation(filePath));
+    driver->begin(pin, LEDCount);
     curAnimation = 0;
     frameTimeAlive = 0;
     speedMod = 1.0;
@@ -31,6 +32,11 @@ bool LEDAnimationDriver::NextAnimationStep(int64_t curTime)
     if(!animations.at(curAnimation).NextAnimationStep(frameTimeAlive, driver))   //next frame started
         frameTimeAlive = 0;
     return true;
+}
+
+void LEDAnimationDriver::AddAnimation(string filePath) 
+{
+    animations.push_back(readAnimation(filePath));
 }
 
 LEDAnimation LEDAnimationDriver::readAnimation(string filePath)
@@ -75,7 +81,6 @@ LEDAnimation LEDAnimationDriver::readAnimation(string filePath)
     // Serial.println(LEDCount);
     // Serial.println(stepper);
     // Serial.println(frameEnding.c_str());
-    driver->begin(pin, LEDCount);
     while(file.available())
     {
     //    Serial.println("how many times will this print?");
