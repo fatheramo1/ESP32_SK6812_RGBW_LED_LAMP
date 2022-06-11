@@ -4,7 +4,6 @@ LEDFrame::LEDFrame(string frameInfo, sk* driver)
     // Serial.println("LEDFrame cconstructor Starting");
     // Serial.printf("LEDFrame consturctor given string\n");
     // Serial.println(frameInfo.c_str());
-    this->driver = driver;
     stringstream s_stream(frameInfo);
     vector<string> temp;
     while(s_stream.good()) //breaks string at commas
@@ -30,10 +29,10 @@ LEDFrame::LEDFrame(string frameInfo, sk* driver)
  * @param nextFrame 
  * @param brightness 0-100
  */
-void LEDFrame::ShowColorsAt(int64_t curtimeAlive, vector<uint32_t> nextFrame) 
+void LEDFrame::ShowColorsAt(int64_t curtimeAlive, vector<uint32_t> nextFrame, sk *driver) 
 {
     float percentage = float(curtimeAlive) / TTL;
-    ShowColorsAt(percentage, nextFrame);
+    ShowColorsAt(percentage, nextFrame, driver);
 }
 
 /**
@@ -43,10 +42,10 @@ void LEDFrame::ShowColorsAt(int64_t curtimeAlive, vector<uint32_t> nextFrame)
  * @param nextFrame 
  * @param brightness 0-100
  */
-void LEDFrame::ShowColorsAt(float percentage, vector<uint32_t> nextFrame)
+void LEDFrame::ShowColorsAt(float percentage, vector<uint32_t> nextFrame, sk *driver)
 {
     //Serial.printf("ShowColorsAt entered with %f %\n", percentage);
-    vector<uint32_t> displayVector = InterpolFramePercentage(percentage, nextFrame);
+    vector<uint32_t> displayVector = InterpolFramePercentage(percentage, nextFrame, driver);
     //Serial.printf("Starting writing values to sk driver\n");
     for(int i = 0; i < displayVector.size(); i++)
         driver->color32(i, displayVector.at(i));
@@ -61,10 +60,10 @@ void LEDFrame::ShowColorsAt(float percentage, vector<uint32_t> nextFrame)
  * @param nextFrame 
  * @return vector<uint32_t> 
  */
-vector<uint32_t> LEDFrame::InterpolFrame(time_t curtimeAlive, vector<uint32_t> nextFrame) 
+vector<uint32_t> LEDFrame::InterpolFrame(time_t curtimeAlive, vector<uint32_t> nextFrame, sk *driver) 
 {
     float percentage = float(curtimeAlive) / TTL;
-    return InterpolFramePercentage(percentage, nextFrame);
+    return InterpolFramePercentage(percentage, nextFrame, driver);
 }
 
 /**
@@ -74,12 +73,12 @@ vector<uint32_t> LEDFrame::InterpolFrame(time_t curtimeAlive, vector<uint32_t> n
  * @param nextFrame 
  * @return vector<uint32_t> 
  */
-vector<uint32_t> LEDFrame::InterpolFramePercentage(float percentage, vector<uint32_t> nextFrame) 
+vector<uint32_t> LEDFrame::InterpolFramePercentage(float percentage, vector<uint32_t> nextFrame, sk *driver) 
 {
     //Serial.printf("InterpolFramePercentage entered %f %\n", percentage);
     vector<uint32_t> retVector;
     for(int i = 0; i < LEDValues.size(); i++) 
-        retVector.push_back(InterpolColors(percentage, LEDValues.at(i), nextFrame.at(i)));
+        retVector.push_back(InterpolColors(percentage, LEDValues.at(i), nextFrame.at(i), driver));
     //Serial.printf("Next colors calculated\n");
     //DebugFrame(retVector);
     return retVector;
@@ -93,7 +92,7 @@ vector<uint32_t> LEDFrame::InterpolFramePercentage(float percentage, vector<uint
  * @param nextColor 
  * @return uint32_t Interpolled Color
  */
-uint32_t LEDFrame::InterpolColors(float percentage, uint32_t curColor, uint32_t nextColor) 
+uint32_t LEDFrame::InterpolColors(float percentage, uint32_t curColor, uint32_t nextColor, sk *driver) 
 {
 //    Serial.printf("Got to interpoling colors with %f %\n", percentage);
     uint8_t *curR, *curG, *curB, *curW;
@@ -120,7 +119,6 @@ void LEDFrame::DebugFrame()
 
 void LEDFrame::DebugFrame(vector<uint32_t> frame)
 {
-    Serial.printf("LEDFrame's driver address: %s\n", AdrToString(driver));
     Serial.printf("TTL: %d\n", TTL);
     for(int i = 0; i < frame.size(); i++)
     {

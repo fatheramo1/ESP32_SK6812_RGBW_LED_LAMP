@@ -26,7 +26,6 @@ LEDAnimation::LEDAnimation(int stepper, string ending, vector<string> frames, sk
     frameEnding = GetEndingType(ending);
     curFrame = 0;
     nextFrame = 1; //should do some checking before assuming 1 exists
-    this->driver = driver;
     //Serial.println("Got through basic assignments");
     for(int i = 0; i < frames.size(); i++) 
     {
@@ -37,7 +36,7 @@ LEDAnimation::LEDAnimation(int stepper, string ending, vector<string> frames, sk
 }
 
 
-bool LEDAnimation::NextAnimationStep(int64_t timeAlive) 
+bool LEDAnimation::NextAnimationStep(int64_t timeAlive, sk *driver) 
 {
     //Serial.printf("Made it to LEDAnimation's NextAnimationStep with %d TA\n", timeAlive);
     //Serial.printf("curFrame = %d\n", curFrame);
@@ -49,13 +48,13 @@ bool LEDAnimation::NextAnimationStep(int64_t timeAlive)
     bool ret = true;
     if(timeAlive >= animation.at(curFrame).GetTTL())
     {
-        Serial.println("SWITCHING FRAMES");
-        Serial.printf("Frame switch is %d ms off of desired\n", timeAlive - animation.at(curFrame).GetTTL());
+        //Serial.println("SWITCHING FRAMES");
+        //Serial.printf("Frame switch is %d ms off of desired\n", timeAlive - animation.at(curFrame).GetTTL());
         ret = false;
         PickNextFrame();
         timeAlive = 0;
     }
-    animation.at(curFrame).ShowColorsAt(timeAlive, animation.at(nextFrame).GetLEDValues());
+    animation.at(curFrame).ShowColorsAt(timeAlive, animation.at(nextFrame).GetLEDValues(), driver);
     return ret;
 }
 

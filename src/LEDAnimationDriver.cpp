@@ -11,20 +11,24 @@ LEDAnimationDriver::LEDAnimationDriver(string filePath, int pin)
     speedMod = 1.0;
 }
 
-void LEDAnimationDriver::NextAnimation()
+
+
+void LEDAnimationDriver::NextAnimation(int64_t curTime)
 {
+    frameTimeAlive = 0;
+    lastCalledTime = curTime;
     if(curAnimation + 1 >= animations.size())
         curAnimation = 0;
     else
         curAnimation++;
 }
 
-bool LEDAnimationDriver::NextAnimationStep(int64_t curtime) 
+bool LEDAnimationDriver::NextAnimationStep(int64_t curTime) 
 {
-    frameTimeAlive = frameTimeAlive + (curtime - lastCalledTime) * speedMod;
-    lastCalledTime = curtime;
+    frameTimeAlive = frameTimeAlive + (curTime - lastCalledTime) * speedMod;
+    lastCalledTime = curTime;
     //Serial.printf("Going to LEDAnimations NextAnimationStep with TimeAlive = %d \n", frameTimeAlive);
-    if(!animations.at(curAnimation).NextAnimationStep(frameTimeAlive))   //next frame started
+    if(!animations.at(curAnimation).NextAnimationStep(frameTimeAlive, driver))   //next frame started
         frameTimeAlive = 0;
     return true;
 }
@@ -38,7 +42,7 @@ LEDAnimation LEDAnimationDriver::readAnimation(string filePath)
     }
 
     //TODO: Figure out why SPIFFS could not open a file from a string object.
-    File file = SPIFFS.open("/PurpleDotAnimation.csv");
+    File file = SPIFFS.open(filePath.c_str());
     if(!file){
         Serial.println("Failed to open file!");
     }

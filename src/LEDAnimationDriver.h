@@ -29,8 +29,8 @@ public:
     void SetStartTime(int64_t sTime) { lastCalledTime = sTime; }
     void SetSpeed(float newSpeed) { speedMod = newSpeed; }
     void SetBrightness(int brightness) { driver->setbrightness(brightness); }
-    void NextAnimation();
-    bool NextAnimationStep(int64_t curtime);
+    void NextAnimation(int64_t curTime);
+    bool NextAnimationStep(int64_t curTime);
     void DebugFileOutput();
 
 private: 

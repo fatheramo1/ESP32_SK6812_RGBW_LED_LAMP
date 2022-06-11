@@ -9,17 +9,16 @@ class LEDFrame
 {
     private: int64_t TTL; //Time till next frame
     private: vector<uint32_t> LEDValues;
-    private: sk* driver;
     
 public:
 LEDFrame(string frameInfo, sk* driver);
 vector<uint32_t> GetLEDValues() { return LEDValues; }
 time_t GetTTL() { return TTL; }
-void ShowColorsAt(int64_t curtimeAlive, vector<uint32_t> nextFrame);
-void ShowColorsAt(float percentage, vector<uint32_t> nextFrame);
-vector<uint32_t> InterpolFrame(time_t curtimeAlive, vector<uint32_t> nextFrame);
-vector<uint32_t> InterpolFramePercentage(float percentage, vector<uint32_t> nextFrame);
-uint32_t InterpolColors(float percentage, uint32_t curColor, uint32_t nextColor);
+void ShowColorsAt(int64_t curtimeAlive, vector<uint32_t> nextFrame, sk *driver);
+void ShowColorsAt(float percentage, vector<uint32_t> nextFrame, sk *driver);
+vector<uint32_t> InterpolFrame(time_t curtimeAlive, vector<uint32_t> nextFrame, sk *driver);
+vector<uint32_t> InterpolFramePercentage(float percentage, vector<uint32_t> nextFrame, sk *driver);
+uint32_t InterpolColors(float percentage, uint32_t curColor, uint32_t nextColor, sk *driver);
 
 public: void DebugFrame();
 public: void DebugFrame(vector<uint32_t> frame);
@@ -54,10 +53,4 @@ private: const string IntToString(int value)
     return ret.str();
 }
 
-public: const string AdrToString(void * adr) 
-{
-    stringstream ret;
-    ret << adr;
-    return ret.str();
-}
 };

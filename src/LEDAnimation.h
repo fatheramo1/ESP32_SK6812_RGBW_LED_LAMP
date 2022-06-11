@@ -23,7 +23,6 @@ private:
     int curFrame; //pointer to current frame to display within the animation
     int nextFrame;
     int stepper; //used to figure out how to increment nextFrame
-    sk* driver;
     EndingType frameEnding;
 
 private: 
@@ -32,9 +31,8 @@ private:
     bool restartEnding();
     bool reverseEnding();
     bool randomEnding();
-    void ShowFrame() {driver->show();}
 public:
     LEDAnimation(int stepper, string ending, vector<string> frames, sk *driver);
-    bool NextAnimationStep(int64_t timeAlive);
+    bool NextAnimationStep(int64_t timeAlive, sk *driver);
     void DebugFrame(int frameNum);
 };
