@@ -40,6 +40,12 @@ LEDAnimation::LEDAnimation(int stepper, string ending, vector<string> frames, sk
     //Serial.println("LEDAnimation constructor is finished");
 }
 
+void LEDAnimation::Reset()
+{
+    curFrame = 0;
+    nextFrame = 1;
+}
+
 
 bool LEDAnimation::NextAnimationStep(int64_t timeAlive, sk *driver) 
 {

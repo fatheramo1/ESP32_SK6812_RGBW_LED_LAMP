@@ -34,5 +34,6 @@ private:
 public:
     LEDAnimation(int stepper, string ending, vector<string> frames, sk *driver);
     bool NextAnimationStep(int64_t timeAlive, sk *driver);
+    void Reset();
     void DebugFrame(int frameNum);
 };

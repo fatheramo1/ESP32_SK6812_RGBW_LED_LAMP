@@ -10,13 +10,18 @@
 
 #define LED_COUNT 60
 #define LED_PIN 26
-#define RES_PIN_1 36
-#define RES_PIN_2 39
+#define BRIGHTNESS_PIN 36
+#define SPEED_PIN 39
+#define BUTTON_PIN 33 //TODO:Pick pin
 #define MAX_RES 4095
+#define COUNT_LONG_PRESS 50
 
 int Brightness = 0;
+bool On = false;
 LEDAnimationDriver *LEDDriver;
 char tmp[256];
+
+TaskHandle_t *checkInputs = NULL;
 
 /**
  * @brief Get the Time In Milli-Second precision 
@@ -44,48 +49,95 @@ float ADCToFloat(int adcVal)
   return ret;
 }
 
+void CheckInputs(void *parameter);
+
 void setup() 
 {
   //Testing Block for file system
   
   Serial.begin(9600);
   Serial.println("Hello World");
-  /*
-  if(!SPIFFS.begin(true))
-  {
-    Serial.println("SPIFFS couldn't begin :(");
-    return;
-  }
-
-  File file = SPIFFS.open("/PurpleDotAnimation.csv");
-  if(!file){
-    Serial.println("Failed to open file!");
-    return;
-  }
-  
-  Serial.println("Content of file:");
-  while(file.available()){
-    Serial.write(file.read());
-  }
-  file.close();
-  */
+  pinMode(BUTTON_PIN, INPUT);
 
 
   //Anitialize the LEDAnimation Driver with a desired LEDAnimation csv file.
   try
   {
     LEDDriver = new LEDAnimationDriver("/PurpleDotAnimation.csv", LED_PIN);
-    int64_t time = GetTimeInMilSec();
-    Serial.printf("Setting start time as %d\n", time);
-    LEDDriver->SetStartTime(time);
+    //Add all animations below
+    //-----------------------------------------------------------
     LEDDriver->AddAnimation("/LEDTestAnimation1.csv");
+    LEDDriver->AddAnimation("/RedShiftWhite.csv");
+    //-----------------------------------------------------------
     LEDDriver->DebugFileOutput();
+    LEDDriver->ClearAnimation();
+    LEDDriver->SetStartTime(GetTimeInMilSec());
   }
   catch (exception e)
   {
     Serial.println(e.what());
   }
 
+  xTaskCreate(
+    CheckInputs,
+    "CheckInputs",
+    1000,
+    NULL,
+    1,
+    checkInputs
+  );
+}
+
+void CheckInputs(void *parameter)
+{
+  int8_t countPressed = 0;
+  for(;;)
+  {
+
+    try
+    {
+      if(digitalRead(BUTTON_PIN) == HIGH)
+      {
+        countPressed++;
+        if(countPressed == COUNT_LONG_PRESS)
+        {
+          //Long press
+          Serial.println("Long Press");
+          LEDDriver->ClearAnimation();
+          LEDDriver->SetStartTime(GetTimeInMilSec());
+          On = !On;
+        }
+      }
+      else
+      {
+        if(countPressed > 0 && countPressed < COUNT_LONG_PRESS)
+        {
+          //Short press
+          Serial.println("Short Press");
+          if(On)
+            LEDDriver->NextAnimation(GetTimeInMilSec());
+          else
+            On = true;
+        }
+        //reset count
+        countPressed = 0;
+      }
+
+      if(On)
+      {
+        LEDDriver->SetBrightness((analogRead(BRIGHTNESS_PIN) * 100) / MAX_RES);
+        LEDDriver->SetSpeed((ADCToFloat(analogRead(SPEED_PIN))));
+        LEDDriver->NextAnimationStep(GetTimeInMilSec());
+      }
+    }
+    catch (exception e)
+    {
+      countPressed = 0;
+      Serial.println(e.what());
+      delay(100000);
+    }
+    delay(10);
+  }
 }
 
 /**
@@ -97,18 +149,6 @@ void setup()
  */
 void loop() 
 {
-  try
-  {
-    int64_t time = GetTimeInMilSec();
-    //Serial.printf("NextStep time is %d\n", time);
-    LEDDriver->SetBrightness((analogRead(RES_PIN_1) * 100) / MAX_RES);
-    LEDDriver->SetSpeed((ADCToFloat(analogRead(RES_PIN_2))));
-    LEDDriver->NextAnimationStep(time);
-  }
-  catch (exception e)
-  {
-    Serial.println(e.what());
-    delay(100000);
-  }
-  //delay(10);
+  //LEDDriver->NextAnimationStep(GetTimeInMilSec());
+  delay(10000);
 }

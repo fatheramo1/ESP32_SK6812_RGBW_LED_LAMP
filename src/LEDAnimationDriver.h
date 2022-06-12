@@ -33,6 +33,7 @@ public:
     bool NextAnimationStep(int64_t curTime);
     void AddAnimation(string filePath);
     void DebugFileOutput();
+    void ClearAnimation();
 
 private: 
     LEDAnimation readAnimation(string filePath);

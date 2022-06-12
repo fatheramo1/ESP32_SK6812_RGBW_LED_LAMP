@@ -12,6 +12,13 @@ LEDAnimationDriver::LEDAnimationDriver(string filePath, int pin)
     speedMod = 1.0;
 }
 
+void LEDAnimationDriver::ClearAnimation()
+{
+    driver->clear();
+    frameTimeAlive = 0;
+    animations.at(curAnimation).Reset();
+}
+
 
 
 void LEDAnimationDriver::NextAnimation(int64_t curTime)
